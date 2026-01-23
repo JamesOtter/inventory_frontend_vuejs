@@ -7,7 +7,7 @@
 
             <div class="navbar-center font-semibold hidden lg:flex">
                 <ul class="menu menu-horizontal px-1 gap-2">
-                    <li><a href="/products" :class="navClass('/products') || navClass('/')">Products</a></li>
+                    <li><a href="/" :class="navClass('/')">Products</a></li>
                     <li><a>Item 2</a></li>
                 </ul>
             </div>

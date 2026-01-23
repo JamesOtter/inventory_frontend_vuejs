@@ -3,7 +3,7 @@ import http from "../http-common";
 // To interact with the backend API for products
 
 class ProductService {
-  getAll() {
+  getProducts() {
     return http.get("/products");
   }
 }

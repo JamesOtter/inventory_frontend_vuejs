@@ -1,10 +1,18 @@
-<script setup></script>
-
 <template>
+  <div>
+    <Navbar />
 
-  <!-- This will render the current page -->
-  <router-view />
+    <!-- This will render the current page -->
+    <router-view />
+  </div>
+  
   
 </template>
 
-<style scoped></style>
+<script>
+  import Navbar from './components/Navbar.vue';
+
+  export default {
+    components: { Navbar }
+  };
+</script>

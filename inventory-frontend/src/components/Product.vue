@@ -3,11 +3,13 @@
         <h1>Product List</h1>
         <table>
             <thead>
-                <th>Product ID</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Quantity</th>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>   
             </thead>
             <tbody>
                 <tr v-for="product in products" :key="product.id">

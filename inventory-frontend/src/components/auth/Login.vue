@@ -60,7 +60,7 @@
 
 <script>
     import AuthService from '../../services/AuthService';
-    import { authState as auth } from '../../store/auth';   
+    import { authState as auth } from '../../store/Auth';   
 
     export default {
         name: 'Login',

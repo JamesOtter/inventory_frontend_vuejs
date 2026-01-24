@@ -26,7 +26,7 @@
 </template>
 
 <script>
-    import { authState as auth } from '../store/auth';
+    import { authState as auth } from '../store/Auth';
     
     export default {
         setup() {

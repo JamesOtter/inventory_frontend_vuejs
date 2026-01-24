@@ -1,11 +1,22 @@
-import axios from 'axios';
-import { authState as auth } from './store/auth';
+import axios from "axios";
 
-// To define base settings for HTTP requests to the backend API
-export default axios.create({
-  baseURL: "http://localhost:8080/api",
-  headers: {
-    "Content-type": "application/json",
-    Authorization: `Bearer ${auth.token}`
-  }
+const http = axios.create({
+    baseURL: "http://localhost:8080/api",
+    headers: {
+        "Content-type": "application/json"
+    }
 });
+
+// Interceptor: attach token from localStorage for every request
+http.interceptors.request.use(
+    config => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+    },
+    error => Promise.reject(error)
+);
+
+export default http;

@@ -71,6 +71,7 @@
 <script>
     import AuthService from '../../services/AuthService';
     import { authState as auth } from '../../store/Auth';   
+    import { toast } from '../../store/Toast';
 
     export default {
         name: 'Login',
@@ -95,6 +96,7 @@
                 AuthService.login(user)
                     .then(response => {
                         auth.login(response.data.token);
+                        toast.success('Logged in successfully!');
                         this.$router.push('/');
                     })
                     .catch(error => {

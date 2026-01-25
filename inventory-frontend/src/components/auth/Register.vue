@@ -96,6 +96,7 @@
 
 <script>
     import AuthService from '../../services/AuthService';
+    import { toast } from '../../store/Toast';
 
     export default {
         name: 'Register',
@@ -119,9 +120,11 @@
 
                 AuthService.register(user)
                     .then(() => {
+                        toast.success('Registered successfully!');
                         this.$router.push('/login');
                     })
                     .catch(error => {
+                        console.log(error);
                         if(error.response && error.response.data.errors) {
                             this.errors = error.response.data.errors;
                         } else {

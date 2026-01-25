@@ -1,6 +1,7 @@
 <template>
   <div>
     <Navbar />
+    <Toast />
 
     <!-- This will render the current page -->
     <router-view />
@@ -11,8 +12,9 @@
 
 <script>
   import Navbar from './components/Navbar.vue';
+  import Toast from './components/Toast.vue';
 
   export default {
-    components: { Navbar }
+    components: { Navbar, Toast }
   };
 </script>

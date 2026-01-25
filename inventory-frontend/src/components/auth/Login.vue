@@ -21,9 +21,12 @@
                         type="email" 
                         v-model="email"
                         placeholder="example@site.com" 
-                        required 
+                        required
                     />
                 </label>
+                <p v-if="errors.email" class="text-red-500 text-sm mt-1">
+                    {{ errors.email }}
+                </p>
             </div>
             
             <div>
@@ -49,7 +52,14 @@
                         placeholder="Password"
                     />
                 </label>
+                <p v-if="errors.password" class="text-red-500 text-sm mt-1">
+                    {{ errors.password }}
+                </p>
             </div>
+
+            <p v-if="errors.general" class="text-red-500 text-sm mt-1">
+                {{ errors.general }}
+            </p>
             
             <button class="btn btn-neutral mt-2">Login</button>
 
@@ -67,11 +77,15 @@
         data() {
             return {
                 email: '',
-                password: ''
+                password: '',
+                errors: {}
             };
         },
         methods: {
             login() {
+                // Reset old errors
+                this.errors = {};
+
                 // Create user object to get input data
                 const user = {
                     email: this.email,
@@ -83,8 +97,17 @@
                         auth.login(response.data.token);
                         this.$router.push('/');
                     })
-                    .catch(e => {
-                        console.log(e);
+                    .catch(error => {
+                        if(error.response && error.response.data.errors) {
+                            this.errors = error.response.data.errors;
+
+                            if(this.errors.general) {
+                                this.password = '';
+                            }
+                        } else {
+                            // Other errors such as network issues / server down
+                            this.errors.general = 'Something went wrong. Please try again.';
+                        }
                     });
             }
         }

@@ -24,6 +24,9 @@
                         placeholder="Username"
                     />
                 </label>
+                <p v-if="errors.username" class="text-red-500 text-sm mt-1">
+                    {{ errors.username }}
+                </p>
             </div>
             
             <div>
@@ -47,6 +50,9 @@
                         required 
                     />
                 </label>
+                <p v-if="errors.email" class="text-red-500 text-sm mt-1">
+                    {{ errors.email }}
+                </p>
             </div>
             
             <div>
@@ -72,7 +78,14 @@
                         placeholder="Password"
                     />
                 </label>
+                <p v-if="errors.password" class="text-red-500 text-sm mt-1">
+                    {{ errors.password }}
+                </p>
             </div>
+
+            <p v-if="errors.general" class="text-red-500 text-sm mt-1">
+                {{ errors.general }}
+            </p>
             
             <button class="btn btn-neutral mt-2">Register</button>
 
@@ -90,11 +103,14 @@
             return {
                 username: '',
                 email: '',
-                password: ''
+                password: '',
+                errors: {}
             };
         },
         methods: {
             register() {
+                this.errors = {};
+
                 const user = {
                     username: this.username,
                     email: this.email,
@@ -105,8 +121,12 @@
                     .then(() => {
                         this.$router.push('/login');
                     })
-                    .catch(e => {
-                        console.log(e);
+                    .catch(error => {
+                        if(error.response && error.response.data.errors) {
+                            this.errors = error.response.data.errors;
+                        } else {
+                            this.errors.general = 'Something went wrong. Please try again.';
+                        }
                     });
             }
         }

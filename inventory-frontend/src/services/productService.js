@@ -5,7 +5,16 @@ import http from "../http-common";
 class ProductService {
   getProducts() {
     return http.get("/products");
-  }
+  };
+  createProduct(product) {
+    return http.post("/products", product);
+  };
+  updateProduct(id, product) {
+    return http.put(`/product/${id}`, product);
+  };
+  deleteProduct(id) {
+    return http.delete(`/product/${id}`);
+  };
 }
 
 export default new ProductService();

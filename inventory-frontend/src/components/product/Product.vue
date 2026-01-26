@@ -1,10 +1,34 @@
 <template>
     <div class="m-10">
         <div class="flex justify-between items-center mb-4">
-            <h1 class="text-2xl font-bold">My Products</h1>
-            <a href="/product/create" class="btn btn-primary">Add Product</a>
+            <div class="flex gap-10">
+                <h1 class="flex-none text-2xl font-bold">My Products</h1>
+                <label class="input w-sm">
+                    <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <g
+                            stroke-linejoin="round"
+                            stroke-linecap="round"
+                            stroke-width="2.5"
+                            fill="none"
+                            stroke="currentColor"
+                        >
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.3-4.3"></path>
+                        </g>
+                    </svg>
+                    <input 
+                        v-model="keyword" 
+                        type="text" 
+                        placeholder="Search by product name"
+                        @input="getProducts"
+                    />
+                </label>
+            </div>
+            <div>
+                <a href="/product/create" class="btn btn-primary justify-self-end">Add Product</a>
+            </div>
         </div>
-        
+          
         <div v-if="products.length > 0">
             <div class="overflow-x-auto rounded-box border bg-base-100 border-slate-300 shadow-sm">
                 <table class="table table-pin-rows">
@@ -121,7 +145,7 @@
                 <div class="max-w-md">
                 <h1 class="text-5xl font-bold">Hello there!</h1>
                 <p class="py-6">
-                    We notice that you haven't created any products yet. Start adding products to manage your inventory effectively!
+                    No product found in your inventory. Start adding products to manage your inventory effectively!
                 </p>
                 <a href="/product/create" class="btn btn-primary">Get Started</a>
                 </div>
@@ -133,12 +157,14 @@
 <script>
 import productService from '../../services/ProductService';
 import { toast } from '../../store/Toast';
+import _ from "lodash";
 
     export default {
         name: 'Products',
         data() {
             return {
                 products: [],
+                keyword: '',
                 selectedProductId: null,
                 editForm: {
                     name: '',
@@ -150,14 +176,11 @@ import { toast } from '../../store/Toast';
             };
         },
         methods: {
-            getProducts() {
-                productService.getProducts()
-                    .then(response => {
-                        this.products = response.data;
-                    }).catch(e => {
-                        console.log(e);
-                    });
-            },
+            getProducts: _.debounce(function() {
+                    productService.getProducts(this.keyword)
+                        .then(response => this.products = response.data);
+            }, 300),
+
             openEditModal(product) {
                 this.errors = {};
                 this.selectedProductId = product.id;

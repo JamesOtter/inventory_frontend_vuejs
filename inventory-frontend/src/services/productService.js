@@ -3,8 +3,10 @@ import http from "../http-common";
 // To interact with the backend API for products
 
 class ProductService {
-  getProducts() {
-    return http.get("/products");
+  getProducts(keyword = '') {
+    return http.get("/products", {
+      params: { keyword: keyword }
+    });
   };
   createProduct(product) {
     return http.post("/products", product);

@@ -13,7 +13,6 @@ if (token) {
             // Token is valid, do nothing
         })
         .catch(() => {
-            localStorage.removeItem('token');
             auth.logout();
         });
 }

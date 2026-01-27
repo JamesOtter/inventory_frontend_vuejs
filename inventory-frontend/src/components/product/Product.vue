@@ -48,7 +48,7 @@
                             <td>{{ product.description }}</td>
                             <td>{{ product.price }}</td>
                             <td>{{ product.quantity }}</td>
-                            <td>{{ product.user.username }}</td>
+                            <td>{{ product.username }}</td>
                             <td>
                                 <button 
                                     class="btn btn-sm btn-info mr-2" 

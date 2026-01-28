@@ -34,6 +34,7 @@
                 <table class="table table-pin-rows">
                     <thead>
                         <tr>
+                            <th>Product</th>
                             <th>Name</th>
                             <th>Description</th>
                             <th>Price</th>
@@ -44,6 +45,13 @@
                     </thead>
                     <tbody>
                         <tr v-for="product in products" :key="product.id" class="hover:bg-base-300">
+                            <td>
+                                <div class="avatar">
+                                    <div class="w-24 rounded">
+                                        <img :src="product.imageUrl" />
+                                    </div>
+                                </div>
+                            </td>
                             <td>{{ product.name }}</td>
                             <td>{{ product.description }}</td>
                             <td>{{ product.price }}</td>

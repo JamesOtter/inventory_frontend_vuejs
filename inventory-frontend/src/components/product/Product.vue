@@ -124,6 +124,20 @@
                             </p>
                         </fieldset>
 
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend">Product Image</legend>
+                            <div class="avatar">
+                                <div class="w-24 rounded">
+                                    <img :src="editForm.imageUrl" />
+                                </div>
+                            </div>
+                            <input type="file" :key="fileInputKey" class="file-input" @change="onImageChange" />
+                            <label class="label">Optional - Max size 5MB</label>
+                            <p v-if="errors.image" class="text-red-500 text-sm mt-1">
+                                {{ errors.image }}
+                            </p>
+                        </fieldset>
+
                         <p v-if="errors.general" class="text-red-500 text-sm mt-1">
                             {{ errors.general }}
                         </p>
@@ -178,8 +192,11 @@ import _ from "lodash";
                     name: '',
                     description: '',
                     quantity: 0,
-                    price: 0.01
+                    price: 0.01,
+                    imageUrl: '',
+                    image: ''
                 },
+                fileInputKey: 0,
                 errors: {}
             };
         },
@@ -189,6 +206,9 @@ import _ from "lodash";
                         .then(response => this.products = response.data);
             }, 300),
 
+            onImageChange(event) {
+                this.editForm.image = event.target.files[0];
+            },
             openEditModal(product) {
                 this.errors = {};
                 this.selectedProductId = product.id;
@@ -197,8 +217,12 @@ import _ from "lodash";
                     name: product.name,
                     description: product.description,
                     quantity: product.quantity,
-                    price: product.price
+                    price: product.price,
+                    imageUrl: product.imageUrl,
+                    image: ''
                 };
+
+                this.fileInputKey++; // To reset file input
             },
             openDeleteModal(product) {
                 this.selectedProductId = product.id;
@@ -206,19 +230,24 @@ import _ from "lodash";
             updateProduct() {
                 this.errors = {};
 
-                const productData = {
-                    name: this.editForm.name,
-                    description: this.editForm.description,
-                    price: this.editForm.price,
-                    quantity: this.editForm.quantity
-                };
+                const productData = new FormData();
+
+                productData.append('name', this.editForm.name);
+                productData.append('description', this.editForm.description);
+                productData.append('price', this.editForm.price);
+                productData.append('quantity', this.editForm.quantity);
+                productData.append('imageUrl', this.editForm.imageUrl);
+
+                if(this.editForm.image) {
+                    productData.append('image', this.editForm.image);
+                }
 
                 productService.updateProduct(this.selectedProductId, productData)
-                    .then(() => {
+                    .then(res => {
                         // To update the product in the list without refetching
                         const index = this.products.findIndex(p => p.id === this.selectedProductId);
                         if (index !== -1) {
-                            Object.assign(this.products[index], productData);
+                            Object.assign(this.products[index], res.data);
                         }
 
                         // To close the modal

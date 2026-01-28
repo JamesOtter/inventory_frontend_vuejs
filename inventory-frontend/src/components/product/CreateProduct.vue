@@ -40,6 +40,15 @@
                 </p>
             </fieldset>
 
+            <fieldset class="fieldset">
+                <legend class="fieldset-legend">Product Image</legend>
+                <input type="file" class="file-input" @change="onImageChange" />
+                <label class="label">Optional - Max size 5MB</label>
+                <p v-if="errors.image" class="text-red-500 text-sm mt-1">
+                    {{ errors.image }}
+                </p>
+            </fieldset>
+
             <p v-if="errors.general" class="text-red-500 text-sm mt-1">
                 {{ errors.general }}
             </p>
@@ -62,19 +71,27 @@ export default {
             description: '',
             quantity: 0,
             price: 0.01,
+            image: null,
             errors: {}
         };
     },
     methods: {
+        onImageChange(event) {
+            this.image = event.target.files[0];
+        },
         createProduct() {
             this.errors = {};
 
-            const productData = {
-                name: this.name,
-                description: this.description,
-                price: this.price,
-                quantity: this.quantity
-            };
+            const productData = new FormData();
+
+            productData.append('name', this.name);
+            productData.append('description', this.description);
+            productData.append('price', this.price);
+            productData.append('quantity', this.quantity);
+            
+            if(this.image) {
+                productData.append('image', this.image);
+            }
 
             productService.createProduct(productData)
                 .then(() => {

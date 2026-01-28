@@ -2,9 +2,6 @@ import axios from "axios";
 
 const http = axios.create({
     baseURL: "http://localhost:8080/api",
-    headers: {
-        "Content-type": "application/json"
-    }
 });
 
 // Interceptor: attach token from localStorage for every request

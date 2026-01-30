@@ -95,7 +95,7 @@
 
                 AuthService.login(user)
                     .then(response => {
-                        auth.login(response.data.token);
+                        auth.login(response.data);
                         toast.success('Logged in successfully!');
                         this.$router.push('/');
                     })

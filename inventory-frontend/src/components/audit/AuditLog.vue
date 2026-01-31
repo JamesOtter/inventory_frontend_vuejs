@@ -2,8 +2,7 @@
     <div class="m-10">
         <div class="mb-4">
             <h1 class="flex-none text-2xl font-bold">Audit Log</h1>
-        </div>
-        
+        </div> 
 
         <div v-if="auditLogs.length > 0">
             <div class="overflow-x-auto rounded-box border bg-base-100 border-slate-300 shadow-sm">
@@ -35,6 +34,13 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <Pagination
+                :currentPage="currentPage"
+                :totalPages="totalPages"
+                @page-change="getAuditLogs"
+            />
         </div>
 
         <div v-else class="hero bg-base-200 min-h-screen">
@@ -54,12 +60,19 @@
 
 <script>
 import AuditLogService from "../../services/AuditLogService";
+import Pagination from "../Pagination.vue";
 
 export default {
     data() {
         return {
-            auditLogs: []
+            auditLogs: [],
+            currentPage: 0,
+            totalPages: 0,
+            pageSize: 10
         };
+    },
+    components: {
+        Pagination
     },
     methods: {
         formatDate(dateTime) {
@@ -71,16 +84,21 @@ export default {
                 minute: '2-digit',
                 second: '2-digit'
             });
+        },
+        getAuditLogs(page) {
+            AuditLogService.getAuditLog(page, this.pageSize)
+                .then(response => {
+                    this.auditLogs = response.data.content;
+                    this.currentPage = response.data.number;
+                    this.totalPages = response.data.totalPages;
+                })
+                .catch(e => {
+                    console.error(e);
+                });
         }
     },
     mounted() {
-        AuditLogService.getAuditLog()
-            .then(response => {
-                this.auditLogs = response.data;
-            })
-            .catch(e => {
-                console.error(e);
-            });
+        this.getAuditLogs(0);
     }
 };
 </script>

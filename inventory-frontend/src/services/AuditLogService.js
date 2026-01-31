@@ -1,8 +1,13 @@
 import http from "../http-common";
 
 class AuditLogService {
-    getAuditLog() {
-        return http.get("/admin/audit-logs");
+    getAuditLog(page = 0, size = 10) {
+        return http.get("/admin/audit-logs", {
+            params: {
+                page: page,
+                size: size
+            }
+        });
     }
 }
 

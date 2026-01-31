@@ -20,7 +20,7 @@
                         v-model="keyword" 
                         type="text" 
                         placeholder="Search by product name"
-                        @input="getProducts"
+                        @input="debouncedSearch"
                     />
                 </label>
             </div>
@@ -40,6 +40,7 @@
                             <th>Price</th>
                             <th>Quantity</th>
                             <th>Created By</th>
+                            <th>Created At</th>
                             <th>Actions</th>
                         </tr>   
                     </thead>
@@ -57,6 +58,7 @@
                             <td>{{ product.price }}</td>
                             <td>{{ product.quantity }}</td>
                             <td>{{ product.username }}</td>
+                            <td>{{ formatDate(product.createdAt) }}</td>
                             <td>
                                 <button 
                                     class="btn btn-sm btn-info mr-2" 
@@ -77,6 +79,14 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Pagination -->
+            <Pagination
+                :currentPage="currentPage"
+                :totalPages="totalPages"
+                @page-change="getProducts"
+            />
+
             
             <!-- Modal - For Edit Action -->
             <dialog id="edit_modal" class="modal">
@@ -180,6 +190,7 @@
 import productService from '../../services/ProductService';
 import { toast } from '../../store/Toast';
 import _ from "lodash";
+import Pagination from '../Pagination.vue';
 
     export default {
         name: 'Products',
@@ -187,6 +198,9 @@ import _ from "lodash";
             return {
                 products: [],
                 keyword: '',
+                currentPage: 0,
+                pageSize: 10,
+                totalPages: 0,
                 selectedProductId: null,
                 editForm: {
                     name: '',
@@ -200,10 +214,21 @@ import _ from "lodash";
                 errors: {}
             };
         },
+        components: {
+            Pagination
+        },
         methods: {
-            getProducts: _.debounce(function() {
-                    productService.getProducts(this.keyword)
-                        .then(response => this.products = response.data);
+            getProducts(page = 0) {
+                this.currentPage = page;
+                productService.getProducts(page, this.pageSize, this.keyword)
+                    .then(response => {
+                        this.products = response.data.content;
+                        this.totalPages = response.data.totalPages;
+                        this.currentPage = response.data.number;
+                    });
+            },
+            debouncedSearch: _.debounce(function() {
+                this.getProducts(0);
             }, 300),
 
             onImageChange(event) {
@@ -277,7 +302,16 @@ import _ from "lodash";
                         console.log(error);
                         toast.error('Failed to delete the product. Please try again.');
                     });
-            }
+            },
+            formatDate(dateTime) {
+            return new Date(dateTime).toLocaleString('en-MY', {
+                year: 'numeric',
+                month: 'short',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        }
         },
         created() {
             this.getProducts();

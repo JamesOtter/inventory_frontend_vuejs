@@ -3,9 +3,13 @@ import http from "../http-common";
 // To interact with the backend API for products
 
 class ProductService {
-  getProducts(keyword = '') {
+  getProducts(page = 0, size = 10, keyword = '') {
     return http.get("/products", {
-      params: { keyword: keyword }
+      params: { 
+        page: page, 
+        size: size, 
+        keyword: keyword 
+      }
     });
   };
   createProduct(product) {
